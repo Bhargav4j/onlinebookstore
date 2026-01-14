@@ -123,6 +123,16 @@
 		<url-pattern>/pay</url-pattern>
 	</servlet-mapping>
 
+	<!-- Health Check -->
+	<servlet>
+		<servlet-name>HealthCheckServlet</servlet-name>
+		<servlet-class>servlets.HealthCheckServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HealthCheckServlet</servlet-name>
+		<url-pattern>/health</url-pattern>
+	</servlet-mapping>
+
 	<!-- Error Handlers -->
 	<servlet>
 		<servlet-name>ErrorHandlerServlet</servlet-name>

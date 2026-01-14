@@ -1,0 +1,65 @@
+=== .dockerignore ===
+# Build outputs
+target/
+build/
+out/
+
+# Maven wrapper (CRITICAL: exclude to avoid wrapper issues)
+mvnw
+mvnw.cmd
+.mvn/
+
+# Gradle wrapper (CRITICAL: exclude to avoid wrapper issues)
+gradlew
+gradlew.bat
+gradle/wrapper/
+
+# IDE files
+.idea/
+.vscode/
+.eclipse/
+.settings/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README*
+LICENSE*
+CODE_OF_CONDUCT*
+CONTRIBUTING*
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+buildspec.yaml
+appspec.yaml
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test/
+tests/
+*.test.js
+
+# Dependency directories
+node_modules/
+
+# Generated files
+dist/
+generated/

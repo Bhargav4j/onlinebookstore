@@ -19,12 +19,17 @@ class DatabaseConfig {
         }
     }
 
+    private static String getConfigValue(String envVar, String propKey) {
+        String envValue = System.getenv(envVar);
+        return (envValue != null && !envValue.isEmpty()) ? envValue : prop.getProperty(propKey);
+    }
+
     public final static String DRIVER_NAME = prop.getProperty("db.driver");
-    public final static String DB_HOST = prop.getProperty("db.host");
-    public final static String DB_PORT = prop.getProperty("db.port");
-    public final static String DB_NAME = prop.getProperty("db.name");
-    public final static String DB_USER_NAME = prop.getProperty("db.username");
-    public final static String DB_PASSWORD = prop.getProperty("db.password");
+    public final static String DB_HOST = getConfigValue("DB_HOST", "db.host");
+    public final static String DB_PORT = getConfigValue("DB_PORT", "db.port");
+    public final static String DB_NAME = getConfigValue("DB_NAME", "db.name");
+    public final static String DB_USER_NAME = getConfigValue("DB_USER_NAME", "db.username");
+    public final static String DB_PASSWORD = getConfigValue("DB_PASSWORD", "db.password");
     public final static String CONNECTION_STRING = DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
 
 }
