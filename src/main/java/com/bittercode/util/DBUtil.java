@@ -15,11 +15,9 @@ public class DBUtil {
 
         try {
 
-            Class.forName(DatabaseConfig.DRIVER_NAME);
-            
             connection = DriverManager.getConnection(DatabaseConfig.CONNECTION_STRING, DatabaseConfig.DB_USER_NAME,
                     DatabaseConfig.DB_PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
 
             e.printStackTrace();
 
