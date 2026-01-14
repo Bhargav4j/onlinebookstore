@@ -40,35 +40,33 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book getBookById(String bookId) throws StoreException {
         Book book = null;
-        Connection con = DBUtil.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement(getBookByIdQuery);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(getBookByIdQuery)) {
             ps.setString(1, bookId);
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String bCode = rs.getString(1);
+                    String bName = rs.getString(2);
+                    String bAuthor = rs.getString(3);
+                    int bPrice = rs.getInt(4);
+                    int bQty = rs.getInt(5);
 
-            while (rs.next()) {
-                String bCode = rs.getString(1);
-                String bName = rs.getString(2);
-                String bAuthor = rs.getString(3);
-                int bPrice = rs.getInt(4);
-                int bQty = rs.getInt(5);
-
-                book = new Book(bCode, bName, bAuthor, bPrice, bQty);
+                    book = new Book(bCode, bName, bAuthor, bPrice, bQty);
+                }
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return book;
     }
 
     @Override
     public List<Book> getAllBooks() throws StoreException {
-        List<Book> books = new ArrayList<Book>();
-        Connection con = DBUtil.getConnection();
+        List<Book> books = new ArrayList<>();
 
-        try {
-            PreparedStatement ps = con.prepareStatement(getAllBooksQuery);
-            ResultSet rs = ps.executeQuery();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(getAllBooksQuery);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 String bCode = rs.getString(1);
@@ -81,7 +79,7 @@ public class BookServiceImpl implements BookService {
                 books.add(book);
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return books;
     }
@@ -89,9 +87,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public String deleteBookById(String bookId) throws StoreException {
         String response = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement(deleteBookByIdQuery);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(deleteBookByIdQuery)) {
             ps.setString(1, bookId);
             int k = ps.executeUpdate();
             if (k == 1) {
@@ -107,9 +104,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public String addBook(Book book) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement(addBookQuery);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(addBookQuery)) {
             ps.setString(1, book.getBarcode());
             ps.setString(2, book.getName());
             ps.setString(3, book.getAuthor());
@@ -129,9 +125,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public String updateBookQtyById(String bookId, int quantity) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement(updateBookQtyByIdQuery);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(updateBookQtyByIdQuery)) {
             ps.setInt(1, quantity);
             ps.setString(2, bookId);
             ps.executeUpdate();
@@ -145,27 +140,38 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getBooksByCommaSeperatedBookIds(String commaSeperatedBookIds) throws StoreException {
-        List<Book> books = new ArrayList<Book>();
-        Connection con = DBUtil.getConnection();
-        try {
-            String getBooksByCommaSeperatedBookIdsQuery = "SELECT * FROM " + BooksDBConstants.TABLE_BOOK
-                    + " WHERE " +
-                    BooksDBConstants.COLUMN_BARCODE + " IN ( " + commaSeperatedBookIds + " )";
-            PreparedStatement ps = con.prepareStatement(getBooksByCommaSeperatedBookIdsQuery);
-            ResultSet rs = ps.executeQuery();
+        List<Book> books = new ArrayList<>();
+        if (commaSeperatedBookIds == null || commaSeperatedBookIds.trim().isEmpty()) {
+            return books;
+        }
 
-            while (rs.next()) {
-                String bCode = rs.getString(1);
-                String bName = rs.getString(2);
-                String bAuthor = rs.getString(3);
-                int bPrice = rs.getInt(4);
-                int bQty = rs.getInt(5);
+        // Split the IDs and create a parameterized query to prevent SQL injection
+        String[] bookIds = commaSeperatedBookIds.split(",");
+        String placeholders = String.join(",", java.util.Collections.nCopies(bookIds.length, "?"));
+        String getBooksByCommaSeperatedBookIdsQuery = "SELECT * FROM " + BooksDBConstants.TABLE_BOOK
+                + " WHERE " + BooksDBConstants.COLUMN_BARCODE + " IN (" + placeholders + ")";
 
-                Book book = new Book(bCode, bName, bAuthor, bPrice, bQty);
-                books.add(book);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(getBooksByCommaSeperatedBookIdsQuery)) {
+
+            for (int i = 0; i < bookIds.length; i++) {
+                ps.setString(i + 1, bookIds[i].trim());
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String bCode = rs.getString(1);
+                    String bName = rs.getString(2);
+                    String bAuthor = rs.getString(3);
+                    int bPrice = rs.getInt(4);
+                    int bQty = rs.getInt(5);
+
+                    Book book = new Book(bCode, bName, bAuthor, bPrice, bQty);
+                    books.add(book);
+                }
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return books;
     }
@@ -173,9 +179,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public String updateBook(Book book) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement(updateBookByIdQuery);
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(updateBookByIdQuery)) {
             ps.setString(1, book.getName());
             ps.setString(2, book.getAuthor());
             ps.setDouble(3, book.getPrice());

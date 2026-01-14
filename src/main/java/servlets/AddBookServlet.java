@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.bittercode.constant.BookStoreConstants;
 import com.bittercode.constant.db.BooksDBConstants;
@@ -48,7 +48,7 @@ public class AddBookServlet extends HttpServlet {
             String uniqueID = UUID.randomUUID().toString();
             String bCode = uniqueID;
             String bAuthor = req.getParameter(BooksDBConstants.COLUMN_AUTHOR);
-            double bPrice = Integer.parseInt(req.getParameter(BooksDBConstants.COLUMN_PRICE));
+            double bPrice = Double.parseDouble(req.getParameter(BooksDBConstants.COLUMN_PRICE));
             int bQty = Integer.parseInt(req.getParameter(BooksDBConstants.COLUMN_QUANTITY));
 
             Book book = new Book(bCode, bName, bAuthor, bPrice, bQty);
