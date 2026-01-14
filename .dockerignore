@@ -1,0 +1,55 @@
+# Maven
+target/
+.m2/
+mvnw
+mvnw.cmd
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+*.iml
+*.iws
+*.ipr
+
+# Documentation
+*.md
+README*
+LICENSE*
+CODE_OF_CONDUCT*
+CONTRIBUTING*
+
+# CI/CD
+.github/
+buildspec.yaml
+appspec.yaml
+Jenkinsfile
+
+# Scripts
+scripts/
+setup/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Other
+Procfile

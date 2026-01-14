@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  onlinebookstore:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: onlinebookstore:latest
+    container_name: onlinebookstore-app
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=your-database-host
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  app-network:
+    driver: bridge
