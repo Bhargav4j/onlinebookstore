@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (Exception e) {
             responseMessage += " : " + e.getMessage();
-            if (responseMessage.contains("Duplicate"))
+            if (responseMessage.contains("duplicate key") || responseMessage.contains("Duplicate"))
                 responseMessage = "User already registered with this email !!";
             e.printStackTrace();
         }

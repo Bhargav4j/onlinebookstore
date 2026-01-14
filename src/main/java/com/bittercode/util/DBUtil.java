@@ -14,13 +14,16 @@ public class DBUtil {
     static {
 
         try {
-
+            // Load PostgreSQL JDBC driver
+            Class.forName(DatabaseConfig.DRIVER_NAME);
             connection = DriverManager.getConnection(DatabaseConfig.CONNECTION_STRING, DatabaseConfig.DB_USER_NAME,
                     DatabaseConfig.DB_PASSWORD);
         } catch (SQLException e) {
 
             e.printStackTrace();
 
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
     }// End of static block
