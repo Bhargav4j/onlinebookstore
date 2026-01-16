@@ -145,7 +145,7 @@
 	<!-- exception-type related error pages -->
 	<error-page>
 		<exception-type>
-			javax.servlet.ServletException
+			jakarta.servlet.ServletException
 		</exception-type>
 		<location>/error</location>
 	</error-page>
