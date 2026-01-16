@@ -147,11 +147,34 @@ public class BookServiceImpl implements BookService {
     public List<Book> getBooksByCommaSeperatedBookIds(String commaSeperatedBookIds) throws StoreException {
         List<Book> books = new ArrayList<Book>();
         Connection con = DBUtil.getConnection();
+
+        if (commaSeperatedBookIds == null || commaSeperatedBookIds.trim().isEmpty()) {
+            return books;
+        }
+
         try {
-            String getBooksByCommaSeperatedBookIdsQuery = "SELECT * FROM " + BooksDBConstants.TABLE_BOOK
-                    + " WHERE " +
-                    BooksDBConstants.COLUMN_BARCODE + " IN ( " + commaSeperatedBookIds + " )";
-            PreparedStatement ps = con.prepareStatement(getBooksByCommaSeperatedBookIdsQuery);
+            // Split the comma-separated IDs to prevent SQL injection
+            String[] bookIds = commaSeperatedBookIds.split(",");
+
+            // Build parameterized query with placeholders
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM " + BooksDBConstants.TABLE_BOOK
+                    + " WHERE " + BooksDBConstants.COLUMN_BARCODE + " IN (");
+
+            for (int i = 0; i < bookIds.length; i++) {
+                queryBuilder.append("?");
+                if (i < bookIds.length - 1) {
+                    queryBuilder.append(",");
+                }
+            }
+            queryBuilder.append(")");
+
+            PreparedStatement ps = con.prepareStatement(queryBuilder.toString());
+
+            // Set parameters safely
+            for (int i = 0; i < bookIds.length; i++) {
+                ps.setString(i + 1, bookIds[i].trim());
+            }
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -165,7 +188,7 @@ public class BookServiceImpl implements BookService {
                 books.add(book);
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return books;
     }
