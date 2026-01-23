@@ -14,12 +14,11 @@ public class DBUtil {
     static {
 
         try {
-
-            Class.forName(DatabaseConfig.DRIVER_NAME);
-            
+            // Class.forName() is no longer required for JDBC 4.0+ drivers (Java 6+)
+            // Driver is automatically loaded via ServiceLoader mechanism
             connection = DriverManager.getConnection(DatabaseConfig.CONNECTION_STRING, DatabaseConfig.DB_USER_NAME,
                     DatabaseConfig.DB_PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
 
             e.printStackTrace();
 

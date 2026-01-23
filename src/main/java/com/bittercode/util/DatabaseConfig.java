@@ -8,12 +8,13 @@ class DatabaseConfig {
 
     static Properties prop = new Properties();
     static {
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classLoader.getResourceAsStream("application.properties");
-
-        try {
-            prop.load(input);
+        // Use class-based resource loading for better reliability in Java 17+
+        try (InputStream input = DatabaseConfig.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                prop.load(input);
+            } else {
+                System.err.println("Unable to find application.properties");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
